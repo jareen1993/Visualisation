@@ -65,8 +65,8 @@ import prefuse.data.io.TableReader;
 	        // -- 3. the renderers and renderer factory ---------------------------
 	        
 	        // draw the "name" label for NodeItems
-	        LabelRenderer r = new LabelRenderer("Name");
-	        r.setRoundedCorner(8, 8); // round the corners
+	        ShapeRenderer r = new ShapeRenderer();
+	        r.diamond(1,1,1); // round the corners
 	        
 	        // create a new default renderer factory
 	        // return our name label renderer as the default for all non-EdgeItems
@@ -116,6 +116,8 @@ import prefuse.data.io.TableReader;
 	        d.addControlListener(new PanControl()); 
 	        // zoom with right-click drag
 	        d.addControlListener(new ZoomControl());
+	        
+	        d.addControlListener(new FinalControlListener());
 	        
 	        // -- 6. launch the visualization -------------------------------------
 	        
@@ -188,13 +190,15 @@ import prefuse.data.io.TableReader;
 		    else if (firstword.equals("label"))
 		    {
 		    	 d = aLine.indexOf(34);
-		    	 names2 = aLine.substring(d+1,aLine.length());	 
+		    	 names2 = aLine.substring(d+1,aLine.length()-1);	 
 		    }
 		    else if (firstword.equals("value"))
 		    {
 		    	Node n = graph.addNode();
 		    	 d1 = aLine.indexOf(34);
-		    	 values2 = aLine.substring(d1+1,aLine.length());	
+		    	 values2 = aLine.substring(d1+1,aLine.length()-1);	
+		    	 
+		    	 
 		    	 n.set("Name", names2);
 		    	 n.set("Stand", values2);
 		    }
