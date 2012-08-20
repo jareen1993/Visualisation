@@ -29,8 +29,10 @@ import prefuse.action.layout.CircleLayout;
 import prefuse.action.layout.RandomLayout;
 import prefuse.action.layout.graph.ForceDirectedLayout;
 import prefuse.controls.DragControl;
+import prefuse.controls.HoverActionControl;
 import prefuse.controls.PanControl;
 import prefuse.controls.ZoomControl;
+import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Schema;
@@ -43,6 +45,10 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.data.io.TableReader;
 
+
+
+
+
 		public class ReadWithScanner {
 	    	static Graph graph = new Graph();
 	    	int source=0,target=0;
@@ -53,6 +59,11 @@ import prefuse.data.io.TableReader;
 		    parser.processLineByLine();
 		    log("Done.");
 		    
+		    int edgecount = graph.getEdgeCount();
+		    int nodecount = graph.getNodeCount();
+		    
+		    int[][] nodeinformation  = new int[nodecount][edgecount];
+		    nodeinformation= nodeinfo.tabularinfo(graph);
 
 		    // -- 2. the visualization --------------------------------------------
 	        
@@ -65,6 +76,9 @@ import prefuse.data.io.TableReader;
 	        // -- 3. the renderers and renderer factory ---------------------------
 	        
 	        // draw the "name" label for NodeItems
+	        LabelRenderer r1 = new LabelRenderer("Name");
+	        r1.setRoundedCorner(8, 8);
+	        
 	        ShapeRenderer r = new ShapeRenderer();
 	        r.diamond(1,1,1); // round the corners
 	        
@@ -72,6 +86,7 @@ import prefuse.data.io.TableReader;
 	        // return our name label renderer as the default for all non-EdgeItems
 	        // includes straight line edges for EdgeItems by default
 	        vis.setRendererFactory(new DefaultRendererFactory(r));
+	      //  vis.setRendererFactory(new DefaultRendererFactory(r1));
 	        	        
 	        // -- 4. the processing actions ---------------------------------------
 	        
@@ -118,6 +133,7 @@ import prefuse.data.io.TableReader;
 	        d.addControlListener(new ZoomControl());
 	        
 	        d.addControlListener(new FinalControlListener());
+	     //   d.addControlListener(new HoverActionControl("fill"));
 	        
 	        // -- 6. launch the visualization -------------------------------------
 	        
@@ -137,6 +153,25 @@ import prefuse.data.io.TableReader;
 		  }
 		  
 		  
+		  
+		  
+		  
+		
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
 		  public ReadWithScanner(String aFileName){
 		    fFile = new File(aFileName);  
 		  }
@@ -151,6 +186,7 @@ import prefuse.data.io.TableReader;
 		      //first use a Scanner to get each line
 		    	graph.addColumn("Name", String.class);
 				graph.addColumn("Stand", String.class);
+				
 		      while ( scanner.hasNextLine() )
 		      {  	  
 		        processLine(scanner.nextLine());
@@ -160,9 +196,15 @@ import prefuse.data.io.TableReader;
 		      //ensure the underlying stream is always closed
 		      //this only has any effect if the item passed to the Scanner
 		      //constructor implements Closeable (which it does in this case).
+		    	
+			    
+		    	
+		    	
 		      scanner.close();
 		    }
+
 		  }
+		  
 		  
 	
 		  protected void processLine(String aLine)
@@ -212,10 +254,18 @@ import prefuse.data.io.TableReader;
 		    	inter = aLine.substring(b+1,aLine.length());
 		    	target = Integer.parseInt(inter);
 		    	graph.addEdge(source, target);
+		    	
+		    	graph.addColumn("edg", String.class);
+		    	
 		    }
 		    else {}	    
 		 
 		  }
+		  
+		  
+		  // go to every edge and add them to the corresponding rows.....say yes or no...
+		  
+		
 		  
 		  
 		  // PRIVATE 
@@ -231,7 +281,7 @@ import prefuse.data.io.TableReader;
 		
 		
 		
-		
+
 		
 		
 		
