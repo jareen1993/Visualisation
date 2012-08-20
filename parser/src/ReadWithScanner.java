@@ -167,7 +167,7 @@ import prefuse.data.io.TableReader;
 		  {  
 		    //use a second Scanner to parse the content of each line 
 			String firstword = new String();
-		    Scanner scanner = new Scanner(aLine);		    
+		    	    
 		    String inter = new String();
 		    int firstspace =  aLine.indexOf(32);
 		    int b=0; int d,d1;int directed ;
@@ -217,11 +217,7 @@ import prefuse.data.io.TableReader;
 		  // PRIVATE 
 		  private final File fFile;	  
 		  private static void log(Object aObject){ System.out.println(String.valueOf(aObject));}		  
-		  private String quote(String aText){
-		    String QUOTE = "'";
-		    return QUOTE + aText + QUOTE;	    
-		  }
-		  
+		 
 		} 
 
 		

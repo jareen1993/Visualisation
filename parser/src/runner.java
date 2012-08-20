@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.lang.*;
 
 import java.io.*;
@@ -42,77 +43,36 @@ import prefuse.util.PrefuseLib;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.data.io.TableReader;
-import java.util.Random;
 
-import prefuse.data.Graph;
-import prefuse.data.Node;
-import prefuse.data.Table;
-public class New_Class 
+public class runner 
 {
-	int count_neu = 0;
-	int count_right = 0;
-	int count_left = 0;
-	public New_Class()
-	{
-		 count_neu = 0;
-		 count_right = 0;
-		 count_left = 0;
-		 System.out.println(count_neu);
-		 System.out.println(count_right);
-		 System.out.println(count_left);
-	}
+
 	
-	public Graph create_random(Graph g)
+	public static void main(String[] args) throws Exception 
 	{
-		Table r2 = g.getNodeTable();
-		Graph g1 = new Graph();
-		g1=g;
-		
-		int n_edges = g.getEdgeCount();
-		for(int i=0;i<n_edges;i++)
+		Imp parser = new Imp("polbooks.gml");
+		Graph g = parser.read();
+		parser.give_vis(parser.read());
+		File file = new File("randomgraph.csv");
+		Writer output = null;
+		output = new BufferedWriter(new FileWriter(file));
+		output.write("%graph id,same_affiliation\n");
+		for(int i=0; i<30; i++)
 		{
-			g1.removeEdge(i);
+			New_Class n = new New_Class();
+			
+		    n.create_random(g);
+		    int same_affiliation= n.count_neu+ n.count_right+ n.count_left;
+		    output.write(i+","+same_affiliation+"\n");
+		    /*System.out.println("Neutral Book Edges = " + n.count_neu);
+		    System.out.println("Right Book Edges = "+ n.count_right);
+		    System.out.println("Left Book Edges = "+ n.count_left);*/
+		    
 		}
-		int n_nodes = g1.getNodeCount();
-		Random rands = new Random();
-		for(int i=0;i<n_edges;i++)
-		{
-			int first = rands.nextInt(n_nodes-1);
-			int second = rands.nextInt(n_nodes-1);
-			while(first==second)
-			{
-				second = rands.nextInt(n_nodes-1);
-			}
-			g1.addEdge(first, second);
-			
-			
-			String s =   r2.getString(first,1);
-			String s2 =  r2.getString(second,1);
-			 //System.out.println(s);
-			 //System.out.println(s2);
-			if (s.equals(s2))
-			{
-				if (s.equals("l"))
-				{
-					count_left++;
-				}
-				if (s.equals("c"))
-				{
-					count_right++;
-				}
-				if (s.equals("n"))
-				{
-					count_neu++;
-				}
-			}
-		}	
-		System.out.println("Total Number Of Edges = " + n_edges);
-		n_edges=0;
-		return g1;
+		output.close();
+	
 		
-		
+
 	}
-
-
 
 }
