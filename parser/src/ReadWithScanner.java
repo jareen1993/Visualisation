@@ -7,6 +7,7 @@ import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataColorAction;
+import prefuse.action.filter.GraphDistanceFilter;
 import prefuse.activity.Activity;
 import prefuse.data.Graph;
 import prefuse.data.io.DataIOException;
@@ -29,8 +30,11 @@ import prefuse.action.layout.CircleLayout;
 import prefuse.action.layout.RandomLayout;
 import prefuse.action.layout.graph.ForceDirectedLayout;
 import prefuse.controls.DragControl;
+import prefuse.controls.NeighborHighlightControl;
 import prefuse.controls.PanControl;
+import prefuse.controls.WheelZoomControl;
 import prefuse.controls.ZoomControl;
+import prefuse.controls.ZoomToFitControl;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Schema;
@@ -65,7 +69,7 @@ import prefuse.data.io.TableReader;
 	        // -- 3. the renderers and renderer factory ---------------------------
 	        
 	        // draw the "name" label for NodeItems
-	        LabelRenderer r = new LabelRenderer("Name");
+	        LabelRenderer r = new LabelRenderer("graph");
 	        r.setRoundedCorner(8, 8); // round the corners
 	        
 	        // create a new default renderer factory
@@ -81,20 +85,26 @@ import prefuse.data.io.TableReader;
 	            ColorLib.rgb(255,180,180), ColorLib.rgb(190,190,255),ColorLib.rgb(90,90,255)
 	        };
 	        // map nominal data values to colors using our provided palette
+
+	        
+	        
 	        DataColorAction fill = new DataColorAction("graph.nodes", "Stand",
 	                Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
 	        // use black for node text
-	        ColorAction text = new ColorAction("graph.nodes",
-	                VisualItem.TEXTCOLOR, ColorLib.gray(0));
+	       // ColorAction text = new ColorAction("graph.nodes",
+	         //       VisualItem.TEXTCOLOR, ColorLib.gray(0));
 	        // use light grey for edges
 	        ColorAction edges = new ColorAction("graph.edges",
 	               VisualItem.STROKECOLOR, ColorLib.gray(200));
 	        
 	        // create an action list containing all color assignments
 	        ActionList color = new ActionList();
+	        //ActionList draw = new ActionList();
+	        
+	        //draw.add(filter);
 	        color.add(fill);
-	        color.add(text);
-	       color.add(edges);
+	        //color.add(text);
+	        color.add(edges);
 	        
 	        // create an action list with an animated layout
 	        ActionList layout = new ActionList(Activity.INFINITY);
@@ -104,7 +114,7 @@ import prefuse.data.io.TableReader;
 	        // add the actions to the visualization
 	        vis.putAction("color", color);
 	        vis.putAction("layout", layout);
-	        
+	        //vis.runAfter("draw", "layout");
 	        
 	        // -- 5. the display and interactive controls -------------------------
 	        
@@ -116,6 +126,10 @@ import prefuse.data.io.TableReader;
 	        d.addControlListener(new PanControl()); 
 	        // zoom with right-click drag
 	        d.addControlListener(new ZoomControl());
+	        d.addControlListener(new WheelZoomControl());
+	        d.addControlListener(new ZoomToFitControl());
+	        d.addControlListener(new NeighborHighlightControl());
+
 	        
 	        // -- 6. launch the visualization -------------------------------------
 	        
