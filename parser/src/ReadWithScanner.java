@@ -162,7 +162,7 @@ import prefuse.data.io.TableReader;
 	        //animate.add(fill1);
 	        //animate.add(fill2);
 	        animate.add(edges);
-	        animate.add(new RepaintAction());
+	       animate.add(new RepaintAction());
 	        
 	        // finally, we register our ActionList with the Visualization.
 	        // we can later execute our Actions by invoking a method on our
@@ -185,14 +185,10 @@ import prefuse.data.io.TableReader;
 	        d.addControlListener(new NeighborHighlightControl());
 
 	        
-	        d.addControlListener(new FinalControlListener());
+	      d.addControlListener(new FinalControlListener());
 	    //   d.addControlListener(new HoverActionControl("fill"));
 	        
-	        
-	        Display ex = new Display();
-	        
-	        
-	        // -- 6. launch the visualization -------------------------------------
+
 	        
 	        // create a new window to hold the visualization
 	        JFrame frame = new JFrame("prefuse example");

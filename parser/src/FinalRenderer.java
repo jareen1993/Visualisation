@@ -14,7 +14,7 @@ public class FinalRenderer extends AbstractShapeRenderer
 	{	
 		int x=0;
 		if(item.get("Stand").equals("l")) {x=15;}
-		if(item.get("Stand").equals("c")) {x=22;}
+		if(item.get("Stand").equals("c")) {x=30;}
 		if(item.get("Stand").equals("n")) {x=10;}
 		
 		m_box.setFrame(item.getX(), item.getY(),x,x);

@@ -3,12 +3,29 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 
+import prefuse.Constants;
+import prefuse.Display;
+import prefuse.Visualization;
+import prefuse.action.ActionList;
+import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.DataColorAction;
+import prefuse.action.layout.graph.ForceDirectedLayout;
+import prefuse.activity.Activity;
 import prefuse.controls.ControlAdapter;
 import prefuse.controls.Control;
+import prefuse.controls.DragControl;
+import prefuse.controls.NeighborHighlightControl;
+import prefuse.controls.PanControl;
+import prefuse.controls.WheelZoomControl;
+import prefuse.controls.ZoomControl;
+import prefuse.controls.ZoomToFitControl;
 import prefuse.data.Graph;
+import prefuse.render.DefaultRendererFactory;
+import prefuse.render.LabelRenderer;
 import prefuse.util.ColorLib;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
@@ -43,6 +60,11 @@ public class FinalControlListener extends ControlAdapter implements Control  {
 			jpub.add("Cong: " + tab[itemno][edgecount+3]);
 			
 			jpub.show(e.getComponent(),1,1);
+			
+			
+			
+			
+			
 
 		}
 
