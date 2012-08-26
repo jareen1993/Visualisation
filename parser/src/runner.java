@@ -32,6 +32,7 @@ import prefuse.action.layout.graph.ForceDirectedLayout;
 import prefuse.controls.DragControl;
 import prefuse.controls.PanControl;
 import prefuse.controls.ZoomControl;
+import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Schema;
@@ -46,33 +47,120 @@ import prefuse.data.io.TableReader;
 
 public class runner 
 {
-
+	
+	
 	
 	public static void main(String[] args) throws Exception 
 	{
-		Imp parser = new Imp("polbooks.gml");
-		Graph g = parser.read();
-		parser.give_vis(parser.read());
+		int ocount_left=0;
+		int ocount_right=0;
+		int ocount_neu=0;
+		Imp parser = new Imp("polbooks.gml");		
+		Graph g1 = parser.read();
+		parser.give_vis(g1);
+		for(int i=0; i< g1.getEdgeCount();i++)
+		{
+			Table r2 = g1.getNodeTable();
+			//g1.getEdge(i);
+			int src = g1.getSourceNode(i);
+			int trgt = g1.getTargetNode(i);
+			//System.out.println(src<trgt);
+			String s =   r2.getString(src,1);
+			String s2 =  r2.getString(trgt,1);
+			if (s.equals(s2))
+			{
+				if (s.equals("l"))
+				{
+					ocount_left++;
+				}
+				if (s.equals("c"))
+				{
+					ocount_right++;
+				}
+				if (s.equals("n"))
+				{
+					ocount_neu++;
+				}
+			}
+		}
+		New_Class n1 = new New_Class();
+		n1.node_cal(g1);
+		float ol_den= (float)(ocount_left)/(n1.ncount_left);
+	    float or_den= (float)(ocount_right)/(n1.ncount_right);
+	    float on_den= (float)(ocount_neu)/(n1.ncount_neu);
+	    System.out.println("left density = " + ol_den);
+	    System.out.println("right density = " + or_den);
+	    System.out.println("Neutral density = " + on_den);
+		//System.out.println("Ori Neutral Book Edges = " + ocount_neu);
+	    //System.out.println("Ori Right Book Edges = "+ ocount_right);
+	    //System.out.println("Ori Left Book Edges = "+ ocount_left);
+	    float b1 = ocount_neu+ ocount_right+ ocount_left;
+	    float b2= g1.getEdgeCount();
+		float oAff_ratio= (float)(b1/b2);
+		System.out.println("Aff ratio in original graph is = "+ oAff_ratio);
+		Imp parser2 =new Imp("polbooks.gml");	
+		Graph g2 = parser2.read();
+		int num_edges = g2.getEdgeCount();
+		for(int i=0; i< num_edges;i++)
+		{
+			g2.removeEdge(i);
+			
+		}
 		File file = new File("randomgraph.csv");
 		Writer output = null;
 		output = new BufferedWriter(new FileWriter(file));
-		output.write("%graph id,same_affiliation\n");
-		for(int i=0; i<30; i++)
+		output.write("%graph id,same_affiliation_ratio,clustering_coeff_total,clustering_coeff_same\n");
+		for(int i=0; i<100; i++)
 		{
-			New_Class n = new New_Class();
 			
-		    n.create_random(g);
+			New_Class n = new New_Class();
+			//System.out.println("Error Might be hear");
+		    n.create_random(g2, num_edges);
+		    
 		    int same_affiliation= n.count_neu+ n.count_right+ n.count_left;
-		    output.write(i+","+same_affiliation+"\n");
-		    /*System.out.println("Neutral Book Edges = " + n.count_neu);
-		    System.out.println("Right Book Edges = "+ n.count_right);
-		    System.out.println("Left Book Edges = "+ n.count_left);*/
+		    float Aff_ratio;
+		    
+		    Aff_ratio = (float)(same_affiliation)/(num_edges);
+		    
+		   // float l_den= (float)(n.count_left)/(n.ncount_left);
+		    //float r_den= (float)(n.count_right)/(n.ncount_right);
+		   // float n_den= (float)(n.count_neu)/(n.ncount_neu);
+		    //System.out.println("left density = " + l_den);
+		    //System.out.println("right density = " + r_den);
+		    //System.out.println("Neutral density = " + n_den);
+		    //System.out.println("Right Book Edges = "+ n.count_right);
+		   // System.out.println("Left Book Edges = "+ n.count_left);
+		    //System.out.println(same_affiliation);
+		    
+		    //System.out.println(Aff_ratio);
+		    New_Class n2 = new New_Class();
+		    Cal_triad c= new Cal_triad();
+		    float f=c.triad(n2.create_random(g2, num_edges));
+		    output.write(i+","+Aff_ratio+","+f+","+c.same_triad_ratio+"\n");
+		    //System.out.println("Neutral Book Edges = " + n.count_neu);
+		    //System.out.println("Right Book Edges = "+ n.count_right);
+		   // System.out.println("Left Book Edges = "+ n.count_left);
 		    
 		}
 		output.close();
-	
+		New_Class n = new New_Class();
+		n.node_cal(g1);
 		
-
+		Cal_triad ct= new Cal_triad();
+		float org_ct= ct.triad(g1);
+		float same_ct = ct.same_triad_ratio;
+		System.out.println("clustering coefficient of original dataset =" +org_ct);
+		System.out.println("Same clustering coefficient of original dataset =" +same_ct);
+		
+		
+		
+		
+		
+		Plya_node pn= new Plya_node();
+		pn.max_lcr(g1);
+		pn.min_lcr(g1);
+		
 	}
+
 
 }

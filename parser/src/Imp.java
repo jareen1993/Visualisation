@@ -45,13 +45,10 @@ import prefuse.data.io.TableReader;
 
 		public class Imp 
 		{
-	    	static Graph graph = new Graph();
+	    	//static Graph graph1 = new Graph();
 	    	int source=0,target=0;
 	    	String names2,values2;
-	    	public void Imp()
-	    	{
-	    			
-	    	}
+	    	
 	    	public Graph read() throws FileNotFoundException 
 		    { 
 	    		Graph g = new Graph();
@@ -68,7 +65,7 @@ import prefuse.data.io.TableReader;
 		  /** Template method that calls {@link #processLine(String)}.  */
 	    	public final Graph processLineByLine() throws FileNotFoundException 
 	    	{
-	    		
+	    		Graph graph1 = new Graph();
 				Graph g = new Graph();
 			    //Note that FileReader is used, not File, since File is not Closeable
 			    Scanner scanner = new Scanner(new FileReader(fFile));
@@ -76,11 +73,11 @@ import prefuse.data.io.TableReader;
 			    {
 			    	
 			      //first use a Scanner to get each line
-			    	graph.addColumn("Name", String.class);
-					graph.addColumn("Stand", String.class);
+			    	graph1.addColumn("Name", String.class);
+					graph1.addColumn("Stand", String.class);
 					while ( scanner.hasNextLine() )
 			        {  	  
-						processLine(scanner.nextLine());
+						graph1=processLine(scanner.nextLine(), graph1);
 			        }
 			    }
 			    finally 
@@ -90,16 +87,16 @@ import prefuse.data.io.TableReader;
 				      //constructor implements Closeable (which it does in this case).
 			    	scanner.close();
 			    }
-			    g=graph;
+			    g=graph1;
 			    return g;
 		  }
 		  
 	
-		  protected void processLine(String aLine)
+		  protected Graph processLine(String aLine, Graph g)
 		  {  
 			    //use a second Scanner to parse the content of each line 
 				String firstword = new String();
-			    		    
+			    Graph graph1=g;		    
 			    String inter = new String();
 			    int firstspace =  aLine.indexOf(32);
 			    int b=0; int d,d1;int directed ;
@@ -124,7 +121,7 @@ import prefuse.data.io.TableReader;
 			    }
 			    else if (firstword.equals("value"))
 			    {
-			    	Node n = graph.addNode();
+			    	Node n = graph1.addNode();
 			    	 d1 = aLine.indexOf(34);
 			    	 values2 = aLine.substring(d1+1,aLine.length()-1);	
 			    	 n.set("Name", names2);
@@ -139,10 +136,10 @@ import prefuse.data.io.TableReader;
 			    {
 			    	inter = aLine.substring(b+1,aLine.length());
 			    	target = Integer.parseInt(inter);
-			    	graph.addEdge(source, target);
+			    	graph1.addEdge(source, target);
 			    }
 			    else {}	    
-		 
+			    return graph1;
 		  }
 		  
 		  
@@ -150,7 +147,7 @@ import prefuse.data.io.TableReader;
 		  private final File fFile;	  
 		  private static void log(Object aObject){ System.out.println(String.valueOf(aObject));}		  
 		  
-		  public void give_vis( Graph x)
+		  public void give_vis(Graph x)
 		  {
 			// -- 2. the visualization --------------------------------------------
 		        
