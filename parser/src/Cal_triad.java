@@ -54,7 +54,12 @@ public class Cal_triad {
 	
 	public int same_triad=0;
 	public float same_triad_ratio=0;
-	
+	/**
+	 * Calculates clustering coefficient for the given graph
+	 * <p>
+	 * @param  Graph g for which clustering coefficient is to be calculated
+	 * @return float value of clustering coefficient
+	 */
 	public float triad (Graph g) {
 		int num_triad=0;
 		Table r2 = g.getNodeTable();

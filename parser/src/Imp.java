@@ -53,7 +53,11 @@ import prefuse.data.io.TableReader;
 	    	//static Graph graph1 = new Graph();
 	    	int source=0,target=0;
 	    	String names2,values2;
-	    	
+	    	/**
+	    	 * Read graph from .gml file of a same directory
+	    	 * <p>
+	    	 * This method returns a Graph by reading from .gml file
+	    	 */
 	    	public Graph read() throws FileNotFoundException 
 		    { 
 	    		Graph g = new Graph();
@@ -150,7 +154,14 @@ import prefuse.data.io.TableReader;
 		  
 		  // PRIVATE 
 		  private final File fFile;	  
-		  private static void log(Object aObject){ System.out.println(String.valueOf(aObject));}		  
+		  private static void log(Object aObject){ System.out.println(String.valueOf(aObject));}
+		  /**
+			 * Generates visualization for input Graph g  
+			 * <p>
+			 * Normal Clustering algorithm is applied
+			 * @param  Input Graph g 
+			 * @return void
+			 */
 		  public void give_edge_vis(Graph graph)
 		  {
 			  
@@ -208,10 +219,8 @@ import prefuse.data.io.TableReader;
 	        ActionList animate = new ActionList(Activity.INFINITY);
 	        animate.add(new ForceDirectedLayout("graph"));
 	        animate.add(fill);
-	        //animate.add(fill1);
-	        //animate.add(fill2);
 	        animate.add(nodes);
-	       animate.add(new RepaintAction());
+	        animate.add(new RepaintAction());
 	        
 	        vis.putAction("layout", animate);
 	        
@@ -254,13 +263,6 @@ import prefuse.data.io.TableReader;
 		  public void give_vis(Graph x)
 		  {
 			    
-			    int edgecount = x.getEdgeCount();
-			    int nodecount = x.getNodeCount();
-			    
-		    int[][] nodeinformation  = new int[nodecount][edgecount];
-			    nodeinformation= nodeinfo.tabularinfo(x);
-				
-	
 		        Visualization vis = new Visualization();
 		        vis.add("graph", x);
 		        vis.setInteractive("graph.edges", null, false);
@@ -281,10 +283,8 @@ import prefuse.data.io.TableReader;
 		        ActionList animate = new ActionList(Activity.INFINITY);
 		        animate.add(new ForceDirectedLayout("graph"));
 		        animate.add(fill);
-		        //animate.add(fill1);
-		        //animate.add(fill2);
 		        animate.add(edges);
-		       animate.add(new RepaintAction());
+		        animate.add(new RepaintAction());
 		        
 		        vis.putAction("layout", animate);
 		        

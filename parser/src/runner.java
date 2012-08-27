@@ -48,8 +48,6 @@ import prefuse.data.io.TableReader;
 public class runner 
 {
 	
-	
-	
 	public static void main(String[] args) throws Exception 
 	{
 		int ocount_left=0;
@@ -127,10 +125,7 @@ public class runner
 		    
 		    
 		}
-		
-		
-		
-		
+
 		output.close();
 		New_Class n = new New_Class();
 		n.node_cal(g1);
@@ -140,11 +135,6 @@ public class runner
 		float same_ct = ct.same_triad_ratio;
 		System.out.println("clustering coefficient of original dataset =" +org_ct);
 		System.out.println("Same clustering coefficient of original dataset =" +same_ct);
-		
-		
-		
-		
-		
 		
 		Plya_node pn= new Plya_node();
 		pn.max_lcr(g1);

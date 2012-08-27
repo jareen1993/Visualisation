@@ -6,10 +6,15 @@ import prefuse.visual.VisualItem;
 
 public class FinalRenderer extends AbstractShapeRenderer
 {
-	//protected RectangularShape m_box = new Rectangle2D.Double();
 	protected Ellipse2D m_box = new Ellipse2D.Double();
 	
 	@Override
+	/**
+	 * Gives different shape to nodes of different affliation
+	 * <p>
+	 * @param  item is VisualItem for which shape is to be changed
+	 * @return Shape of the item
+	 */
 	protected Shape getRawShape(VisualItem item) 
 	{	
 		int x=0;

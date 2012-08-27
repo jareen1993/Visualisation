@@ -47,7 +47,14 @@ import prefuse.visual.expression.InGroupPredicate;
 import prefuse.data.io.TableReader;
 public class Plya_node 
 {
-	
+	/**
+	 * Returns a 
+	 * <p>
+	 * This method always returns a random Graph with random Edges
+	 * @param  Input Graph g without edges
+	 * @param  Number Of edges wanted
+	 * @return Random Graph
+	 */
 	public int[][] make_table(Graph g)
 	{
 		Table r2 = g.getNodeTable();
@@ -121,6 +128,12 @@ public class Plya_node
 		//}
 		return nodeinfo;
 	}
+	/**
+	 * Calculates some statistics for the given graph and prints them to System.out
+	 * <p>
+	 * @param  Graph g for which statistics are to be calculated
+	 * @return void
+	 */
 	public void max_lcr(Graph g)
 	{
 		Table r2 = g.getNodeTable();

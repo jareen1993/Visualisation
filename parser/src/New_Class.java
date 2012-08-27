@@ -49,6 +49,14 @@ import prefuse.data.Node;
 import prefuse.data.Table;
 public class New_Class 
 {
+	/**
+	 * Creates random graph with nodes from input graph g
+	 * <p>
+	 * This method always returns a random Graph with random Edges
+	 * @param  Input Graph g without edges
+	 * @param  Number Of edges wanted
+	 * @return Random Graph
+	 */
 	int count_neu = 0;
 	int count_right = 0;
 	int count_left = 0;
@@ -59,8 +67,6 @@ public class New_Class
 	
 	public Graph create_random(Graph g, int num)
 	{
-		//runner run = new runner(); 
-		
 		Table r2 = g.getNodeTable();
 		Graph g1 = new Graph();
 		g1=g;
@@ -105,6 +111,14 @@ public class New_Class
 		n_edges=0;
 		return g1;
 	}
+	/**
+	 * Calculates number of nodes
+	 * <p>
+	 * Calculates number of nodes and stores in local variables
+	 * @param  Input Graph g 
+	 * @return Void
+	 */
+	
 	public void node_cal(Graph g)
 	{
 		Table r2 = g.getNodeTable();
