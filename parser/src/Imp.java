@@ -20,6 +20,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.util.Random;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import prefuse.Constants;
@@ -57,7 +59,7 @@ import prefuse.data.io.TableReader;
 	    		Graph g = new Graph();
 	    		Imp parser = new Imp("polbooks.gml");
 	    		g = parser.processLineByLine();
-	    		log("Done.");
+	    		
 	    		return g; 
 		    }
 	    	public Imp(String aFileName)
@@ -149,6 +151,105 @@ import prefuse.data.io.TableReader;
 		  // PRIVATE 
 		  private final File fFile;	  
 		  private static void log(Object aObject){ System.out.println(String.valueOf(aObject));}		  
+		  public void give_edge_vis(Graph graph)
+		  {
+			  
+			   int edgecount = graph.getEdgeCount();
+			    int nodecount = graph.getNodeCount();
+			    int c_same=0;
+			    int c_ltoc=0;
+			    int c_lton=0;
+			    int c_ntoc=0;
+			    
+			    int[][] nodeinformation  = new int[nodecount][edgecount];
+			    nodeinformation= nodeinfo.tabularinfo(graph);
+			    
+			    graph.getEdgeTable().addColumn("Type", String.class);
+			    int i;
+			    int src,trgt;
+			    String s1,s2;
+			    for(i=0;i<edgecount;i++)
+			    {
+			    	src = graph.getSourceNode(i);
+			    	trgt = graph.getTargetNode(i);
+			    	Table s = graph.getNodeTable();
+			    	s1 = (String) s.get(src,"Stand");
+			    	s2 = (String) s.get(trgt,"Stand");
+			    	if(s1.equals(s2)){ graph.getEdgeTable().set(i, "Type", "Same"); c_same++;}
+			    	else
+			    	{
+			    		if(s1.equals("l") && s2.equals("c")){ graph.getEdgeTable().set(i, "Type", "ltoc"); c_ltoc++;}
+			    	if(s1.equals("c") && s2.equals("l")){ graph.getEdgeTable().set(i, "Type", "ltoc");c_ltoc++;}
+			    	if(s1.equals("l") && s2.equals("n")){ graph.getEdgeTable().set(i, "Type", "lton");c_lton++;}
+			    	if(s1.equals("n") && s2.equals("l")){ graph.getEdgeTable().set(i, "Type", "lton");c_lton++;}
+			    	if(s1.equals("n") && s2.equals("c")){ graph.getEdgeTable().set(i, "Type", "ntoc");c_ntoc++;}
+			    	if(s1.equals("c") && s2.equals("n")){ graph.getEdgeTable().set(i, "Type", "ntoc");c_ntoc++;}
+			    	}
+			    	 
+			    }
+			    System.out.println("Total Edges = " +edgecount);
+			    System.out.println("Same Edges = " +c_same);
+			    System.out.println("L to N Edges = " +c_lton);
+			    System.out.println("N to C Edges = " +c_ntoc);
+			    System.out.println("L to C Edges = " +c_ltoc);
+			    Visualization vis = new Visualization();
+		        vis.add("graph", graph);
+		        vis.setInteractive("graph.edges", null, false);
+		        FinalRenderer r = new FinalRenderer();
+			    vis.setRendererFactory(new DefaultRendererFactory(r));
+	int[] palette = {ColorLib.rgb(100, 210, 100), ColorLib.rgb(255,100,100),ColorLib.rgb(100,100,255),ColorLib.rgb(242,181,82)};
+	DataColorAction fill = new DataColorAction("graph.edges","Type",Constants.NOMINAL,
+            VisualItem.STROKECOLOR, palette);
+	
+	ColorAction nodes = new ColorAction("graph.nodes", 
+	        VisualItem.FILLCOLOR, ColorLib.gray(200));
+	        
+	        
+	        ActionList animate = new ActionList(Activity.INFINITY);
+	        animate.add(new ForceDirectedLayout("graph"));
+	        animate.add(fill);
+	        //animate.add(fill1);
+	        //animate.add(fill2);
+	        animate.add(nodes);
+	       animate.add(new RepaintAction());
+	        
+	        vis.putAction("layout", animate);
+	        
+	        // -- 5. the display and interactive controls -------------------------
+	        
+	        Display d = new Display(vis);
+	        d.setSize(2000, 1500); // set display size
+	        // drag individual items around
+	        d.addControlListener(new DragControl());
+	        // pan with left-click drag on background
+	        d.addControlListener(new PanControl()); 
+	        // zoom with right-click drag
+	        d.addControlListener(new ZoomControl());
+	        d.addControlListener(new WheelZoomControl());
+	        d.addControlListener(new ZoomToFitControl());
+	        d.addControlListener(new NeighborHighlightControl());
+
+	        
+	      d.addControlListener(new FinalControlListener());
+	    //   d.addControlListener(new HoverActionControl("fill"));
+	        
+
+	        
+	        // create a new window to hold the visualization
+	        JFrame frame = new JFrame("prefuse example");
+	        // ensure application exits when window is closed
+	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        frame.add(d);
+	        frame.pack();           // layout components in window
+	        frame.setVisible(true); // show the window
+	        
+	        // assign the colors
+	        vis.run("color");
+	        // start up the animated layout
+	        vis.run("layout");
+	
+	
+		  }
 		  
 		  public void give_vis(Graph x)
 		  {
@@ -159,83 +260,23 @@ import prefuse.data.io.TableReader;
 		    int[][] nodeinformation  = new int[nodecount][edgecount];
 			    nodeinformation= nodeinfo.tabularinfo(x);
 				
-	/*
-			    Table edgeinfo = graph.getEdgeTable();
-			    edgeinfo.addColumn("Edgetype", String.class);
-			    //n.set("Name", names2);
-			    int i,src,trgt;
-			    for(i=0;i<edgecount;i++)
-			    {
-			    	 src = graph.getSourceNode(i);
-					  trgt = graph.getTargetNode(i);
-					 String s = graph.get(src,1);
-					  
-			    }*/
-			    	
-			    
-			    
-			    
-			    // -- 2. the visualization --------------------------------------------
-		        
-		        // add the graph to the visualization as the data group "graph"
-		        // nodes and edges are accessible as "graph.nodes" and "graph.edges"
+	
 		        Visualization vis = new Visualization();
 		        vis.add("graph", x);
 		        vis.setInteractive("graph.edges", null, false);
-		        
-		        // -- 3. the renderers and renderer factory ---------------------------
-		        
-		        // draw the "name" label for NodeItems
-
-
-
-		        LabelRenderer r1 = new LabelRenderer("Name");
+			        LabelRenderer r1 = new LabelRenderer("Name");
 		        r1.setRoundedCorner(8, 8);
 		        
 		        FinalRenderer r = new FinalRenderer();
-		        
-		        
-		        
-
-		        
-		        
-		        // create a new default renderer factory
-		        // return our name label renderer as the default for all non-EdgeItems
-		        // includes straight line edges for EdgeItems by default
-		        vis.setRendererFactory(new DefaultRendererFactory(r));
-		        
-		      //  vis.setRendererFactory(new DefaultRendererFactory(r1));
-		        	        
-		        // -- 4. the processing actions ---------------------------------------
-		        
-		        // create our nominal color palette
-		        // pink for females, baby blue for males
+			        vis.setRendererFactory(new DefaultRendererFactory(r));
 		        int[] palette = {ColorLib.rgb(100, 210, 100), ColorLib.rgb(255,100,100),ColorLib.rgb(100,100,255)};
-		        //int[] palette_1 = {ColorLib.rgb(100, 150, 100), ColorLib.rgb(150,100,100),ColorLib.rgb(100,100,150)};
-		        
-		     // Now we create the DataColorAction
-		     // We give it the nodes to color, the data column to color by, a
-		     // constant (don't worry about it (or check the api)),
-		     // the way to color, and the palette to use.
 		        DataColorAction fill = new DataColorAction("graph.nodes", "Stand",Constants.NOMINAL,VisualItem.FILLCOLOR,palette);
 		        ColorAction edges = new ColorAction("graph.edges", 
 		        VisualItem.STROKECOLOR, ColorLib.gray(200));
-		        //DataColorAction fill1 = new DataColorAction("graph.nodes", "Stand",Constants.NOMINAL,VisualItem.FIXED,palette_1);
-		       // DataColorAction fill2 = new DataColorAction("graph.nodes", "Stand",Constants.NOMINAL,VisualItem.HIGHLIGHT,palette_1);
-		        
-		        
 		        
 		        fill.add(VisualItem.FIXED, ColorLib.gray(0));
 		        fill.add(VisualItem.HIGHLIGHT, ColorLib.rgb(255,200,125));
 		        
-		        //ActionList draw = new ActionList();
-		        //draw.add(filter);
-		        //draw.add(fill);
-		        //draw.add(edges);
-		        //draw.add(new ColorAction("graph.nodes", VisualItem.STROKECOLOR, 0));
-		        //draw.add(new ColorAction("graph.nodes", VisualItem.TEXTCOLOR, ColorLib.rgb(0,0,0)));
-		        //draw.add(new ColorAction("graph.edges", VisualItem.FILLCOLOR, ColorLib.gray(200)));
-		        //draw.add(new ColorAction("graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200)));
 		        
 		        ActionList animate = new ActionList(Activity.INFINITY);
 		        animate.add(new ForceDirectedLayout("graph"));
@@ -245,21 +286,17 @@ import prefuse.data.io.TableReader;
 		        animate.add(edges);
 		       animate.add(new RepaintAction());
 		        
-		        // finally, we register our ActionList with the Visualization.
-		        // we can later execute our Actions by invoking a method on our
-		        // Visualization, using the name we've chosen below.
-		        //vis.putAction("draw", draw);
 		        vis.putAction("layout", animate);
 		        
 		        // -- 5. the display and interactive controls -------------------------
 		        
 		        Display d = new Display(vis);
 		        d.setSize(2000, 1500); // set display size
-		        // drag individual items around
+		        
 		        d.addControlListener(new DragControl());
-		        // pan with left-click drag on background
+		        
 		        d.addControlListener(new PanControl()); 
-		        // zoom with right-click drag
+		       
 		        d.addControlListener(new ZoomControl());
 		        d.addControlListener(new WheelZoomControl());
 		        d.addControlListener(new ZoomToFitControl());
@@ -267,21 +304,20 @@ import prefuse.data.io.TableReader;
 
 		        
 		      d.addControlListener(new FinalControlListener());
-		    //   d.addControlListener(new HoverActionControl("fill"));
-		        
-
-		        
-		        // create a new window to hold the visualization
+		    
 		        JFrame frame = new JFrame("prefuse example");
-		        // ensure application exits when window is closed
+		        JButton b = new JButton("edge view");
+		        frame.add(b,BorderLayout.SOUTH);
+		        Main l = new Main();
+		        b.addActionListener(l);
 		        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		        frame.add(d);
 		        frame.pack();           // layout components in window
 		        frame.setVisible(true); // show the window
 		        
-		        // assign the colors
+		        
 		        vis.run("color");
-		        // start up the animated layout
+		        
 		        vis.run("layout");      
 			  
 		  }

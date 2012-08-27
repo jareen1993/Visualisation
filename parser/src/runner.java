@@ -85,27 +85,19 @@ public class runner
 		}
 		New_Class n1 = new New_Class();
 		n1.node_cal(g1);
+		
 		float ol_den= (float)(ocount_left)/(n1.ncount_left);
 	    float or_den= (float)(ocount_right)/(n1.ncount_right);
 	    float on_den= (float)(ocount_neu)/(n1.ncount_neu);
 	    System.out.println("left density = " + ol_den);
 	    System.out.println("right density = " + or_den);
 	    System.out.println("Neutral density = " + on_den);
-		//System.out.println("Ori Neutral Book Edges = " + ocount_neu);
-	    //System.out.println("Ori Right Book Edges = "+ ocount_right);
-	    //System.out.println("Ori Left Book Edges = "+ ocount_left);
+	    
 	    float b1 = ocount_neu+ ocount_right+ ocount_left;
 	    float b2= g1.getEdgeCount();
 		float oAff_ratio= (float)(b1/b2);
 		System.out.println("Aff ratio in original graph is = "+ oAff_ratio);
-		Imp parser2 =new Imp("polbooks.gml");	
-		Graph g2 = parser2.read();
-		int num_edges = g2.getEdgeCount();
-		for(int i=0; i< num_edges;i++)
-		{
-			g2.removeEdge(i);
-			
-		}
+				
 		File file = new File("randomgraph.csv");
 		Writer output = null;
 		output = new BufferedWriter(new FileWriter(file));
@@ -113,35 +105,32 @@ public class runner
 		for(int i=0; i<100; i++)
 		{
 			
+			Graph neeraj = new Graph();
 			New_Class n = new New_Class();
-			//System.out.println("Error Might be hear");
-		    n.create_random(g2, num_edges);
-		    
+			Imp parser2 =new Imp("polbooks.gml");	
+			Graph g2 = parser2.read();
+			int num_edges = g2.getEdgeCount();
+			for(int i1=0; i1< num_edges;i1++)
+			{
+				g2.removeEdge(i1);
+			}
+			neeraj = n.create_random(g2, num_edges);
+			
 		    int same_affiliation= n.count_neu+ n.count_right+ n.count_left;
-		    float Aff_ratio;
+		    float Aff_ratio;		    
+		    Aff_ratio = (float)(same_affiliation)/(num_edges);  		   
+		    Cal_triad c= new Cal_triad();	   
+		     
+		    float f=c.triad(neeraj);
 		    
-		    Aff_ratio = (float)(same_affiliation)/(num_edges);
-		    
-		   // float l_den= (float)(n.count_left)/(n.ncount_left);
-		    //float r_den= (float)(n.count_right)/(n.ncount_right);
-		   // float n_den= (float)(n.count_neu)/(n.ncount_neu);
-		    //System.out.println("left density = " + l_den);
-		    //System.out.println("right density = " + r_den);
-		    //System.out.println("Neutral density = " + n_den);
-		    //System.out.println("Right Book Edges = "+ n.count_right);
-		   // System.out.println("Left Book Edges = "+ n.count_left);
-		    //System.out.println(same_affiliation);
-		    
-		    //System.out.println(Aff_ratio);
-		    New_Class n2 = new New_Class();
-		    Cal_triad c= new Cal_triad();
-		    float f=c.triad(n2.create_random(g2, num_edges));
 		    output.write(i+","+Aff_ratio+","+f+","+c.same_triad_ratio+"\n");
-		    //System.out.println("Neutral Book Edges = " + n.count_neu);
-		    //System.out.println("Right Book Edges = "+ n.count_right);
-		   // System.out.println("Left Book Edges = "+ n.count_left);
+		    
 		    
 		}
+		
+		
+		
+		
 		output.close();
 		New_Class n = new New_Class();
 		n.node_cal(g1);
@@ -156,10 +145,10 @@ public class runner
 		
 		
 		
+		
 		Plya_node pn= new Plya_node();
 		pn.max_lcr(g1);
 		pn.min_lcr(g1);
-		
 	}
 
 
